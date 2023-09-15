@@ -9,15 +9,13 @@ def login_to_wandb():
     try:
         api_key = str(shared.opts.wandb_api_key)
         if api_key != "":
-            shared.log.info("Re-logging in to WandB")
+            shared.log.info("Re-logging in to WandB: " + api_key)
             os.environ["WANDB_API_KEY"] = api_key
             shared.log.info("Successfully set WandB API Key")
         else:
             shared.log.error("Unable to re-log in to WandB")
     except AttributeError:
         shared.log.error("Unable to re-log in to WandB")
-    except KeyError:
-        pass
 
 
 def wandb_settings():
