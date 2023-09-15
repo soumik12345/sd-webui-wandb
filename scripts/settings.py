@@ -7,7 +7,7 @@ from modules import script_callbacks
 
 def login_to_wandb():
     try:
-        api_key = shared.opts.wandb_api_key
+        api_key = str(shared.opts.wandb_api_key)
         if api_key != "":
             shared.log.info("Re-logging in to WandB")
             os.environ["WANDB_API_KEY"] = api_key
