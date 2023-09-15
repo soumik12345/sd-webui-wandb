@@ -1,4 +1,3 @@
-import modules.scripts as scripts
 import gradio as gr
 import os
 
@@ -6,16 +5,26 @@ from modules import shared
 from modules import script_callbacks
 
 
+def login_to_wandb(api_key):
+    shared.log.info("Re-logging to WandB")
+    os.environ["WANDB_API_KEY"] = api_key
+
+
 def wandb_settings():
-    section = ('template', "Template")
+    gr.Markdown(
+        "You can get your WandB API key from [https://wandb.ai/authorize](https://wandb.ai/authorize)"
+    )
+    section = ('wandb', "Weights & Biases")
     shared.opts.add_option(
-        "option1",
+        "wandb_api_key",
         shared.OptionInfo(
             False,
-            "option1 description",
-            gr.Checkbox,
-            {"interactive": True},
-            section=section)
+            label="Weights & Biases API Key",
+            component=gr.Textbox,
+            component_args={"type": "password"},
+            section=section,
+            onchange=login_to_wandb(shared.opts.wandb_api_key),
+        )
     )
 
 
