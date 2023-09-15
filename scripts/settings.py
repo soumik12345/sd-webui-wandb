@@ -26,7 +26,7 @@ def wandb_settings():
             default="",
             label="Weights & Biases API Key",
             component=gr.Textbox,
-            component_args={"type": "password"},
+            component_args={"type": "password", "interactive": True},
             section=section,
             onchange=login_to_wandb(),
             submit=login_to_wandb(),
