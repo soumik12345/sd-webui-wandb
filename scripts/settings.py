@@ -6,9 +6,12 @@ from modules import script_callbacks
 
 
 def login_to_wandb():
-    api_key = shared.opts.wandb_api_key
-    shared.log.info("Re-logging to WandB")
-    os.environ["WANDB_API_KEY"] = api_key
+    try:
+        api_key = shared.opts.wandb_api_key
+        shared.log.info("Re-logging in to WandB")
+        os.environ["WANDB_API_KEY"] = api_key
+    except:
+        shared.log.error("Unable to re-log in to WandB")
 
 
 def wandb_settings():
