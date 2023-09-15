@@ -33,6 +33,26 @@ def wandb_settings():
             comment_before="You can get your WandB API key from [https://wandb.ai/authorize](https://wandb.ai/authorize)"
         )
     )
+    shared.opts.add_option(
+        "wandb_project",
+        shared.OptionInfo(
+            default="",
+            label="Weights & Biases Project",
+            component=gr.Textbox,
+            component_args={"interactive": True},
+            section=section,
+        )
+    )
+    shared.opts.add_option(
+        "wandb_entity",
+        shared.OptionInfo(
+            default="",
+            label="Weights & Biases Entity",
+            component=gr.Textbox,
+            component_args={"interactive": True},
+            section=section,
+        )
+    )
 
 
 script_callbacks.on_ui_settings(wandb_settings)
