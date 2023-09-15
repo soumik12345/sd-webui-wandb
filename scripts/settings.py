@@ -28,6 +28,7 @@ def wandb_settings():
             component=gr.Textbox,
             component_args={"type": "password"},
             section=section,
+            onchange=login_to_wandb(),
             submit=login_to_wandb(),
             comment_before="You can get your WandB API key from [https://wandb.ai/authorize](https://wandb.ai/authorize)"
         )
