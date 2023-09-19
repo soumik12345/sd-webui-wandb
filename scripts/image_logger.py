@@ -5,7 +5,7 @@ import os
 from modules import images, script_callbacks
 from modules.processing import process_images, Processed
 from modules.processing import Processed
-from modules.shared import opts, cmd_opts, state
+from modules.shared import opts, cmd_opts, state, log
 
 import wandb
 
@@ -22,6 +22,7 @@ class ImageLogger(scripts.Script):
         return super().ui(is_img2img)
 
     def run(self, p, *args, **kwargs):
+        log.info("Initializeing WandB!!!!!")
         wandb.init(
             project=opts.wandb_project,
             entity=opts.wandb_entity,
