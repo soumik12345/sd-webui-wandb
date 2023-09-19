@@ -18,7 +18,11 @@ class ImageLogger(scripts.Script):
         return scripts.AlwaysVisible
     
     def ui(self, is_img2img):
-        gr.Markdown("## Logging to Weights & Biases!")
+        with gr.Accordion("Logging to Weights & Biases", open=False):
+            with gr.Row():
+                gr.Markdown(f"**WandB Project: {opts.wandb_project}")
+            with gr.Row():
+                gr.Markdown(f"**WandB Entity: {opts.wandb_entity}")
         return super().ui(is_img2img)
 
     def postprocess(self, p, processed, *args):
