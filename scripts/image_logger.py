@@ -21,7 +21,7 @@ class ImageLogger(scripts.Script):
         gr.Markdown("## Logging to Weights & Biases!")
         return super().ui(is_img2img)
 
-    def run(self, p):
+    def run(self, p, *args, **kwargs):
         wandb.init(
             project=opts.wandb_project,
             entity=opts.wandb_entity,
