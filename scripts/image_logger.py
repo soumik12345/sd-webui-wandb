@@ -16,6 +16,10 @@ class ImageLogger(scripts.Script):
 
     def show(self, is_img2img):
         return scripts.AlwaysVisible
+    
+    def ui(self, is_img2img):
+        gr.Markdown("## Logging to Weights & Biases!")
+        return super().ui(is_img2img)
 
     def run(self, p):
         wandb.init(
