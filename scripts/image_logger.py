@@ -2,7 +2,6 @@ import modules.scripts as scripts
 import gradio as gr
 import os
 
-from modules import images, script_callbacks
 from modules.processing import process_images, Processed
 from modules.processing import Processed
 from modules.shared import opts, cmd_opts, state, log
@@ -27,22 +26,92 @@ class ImageLogger(scripts.Script):
         return "Log to Weights & Biases"
 
     def show(self, is_img2img):
+        self.job_type = "img2img" if is_img2img else "txt2img"
         return scripts.AlwaysVisible
 
     def ui(self, is_img2img):
-        with gr.Accordion("Logging to Weights & Biases", open=False):
+        with gr.Accordion("Weights & Biases", open=False):
             wandb_workspace_url = (
                 f"https://wandb.ai/{opts.wandb_entity}/{opts.wandb_project}"
             )
             gr.Markdown(
                 f"Logging to project [**{opts.wandb_project}/{opts.wandb_entity}**]({wandb_workspace_url})"
             )
-        return super().ui(is_img2img)
+        return [super().ui(is_img2img)]
 
     def postprocess(self, p, processed, *args):
         login_to_wandb()
-        # log.info("Initializeing WandB!!!!!")
-        # log.warning("Initializeing WandB!!!!!")
-        # log.error("Initializeing WandB!!!!!")
-        # print("Initializeing WandB!!!!!")
+        with wandb.init(
+            project=opts.wandb_project, entity=opts.wandb_entity, job_type=self.job_type
+        ):
+            config = wandb.config
+            config.prompt = processed.prompt
+            config.negative_prompt = processed.negative_prompt
+            config.all_prompts = processed.all_prompts
+            config.all_negative_prompts = processed.all_negative_prompts
+            config.seed = processed.seed
+            config.subseed = processed.subseed
+            config.all_seeds = processed.all_seeds
+            config.all_subseeds = processed.all_subseeds
+            config.subseed_strength = processed.subseed_strength
+            config.info = processed.info
+            config.comments = processed.comments
+            config.width = processed.width
+            config.height = processed.height
+            config.sampler_name = processed.sampler_name
+            config.cfg_scale = processed.cfg_scale
+            config.image_cfg_scale = processed.image_cfg_scale
+            config.steps = processed.steps
+            config.batch_size = processed.batch_size
+            config.restore_faces = processed.restore_faces
+            config.seed_resize_from_w = processed.seed_resize_from_w
+            config.seed_resize_from_h = processed.seed_resize_from_h
+            config.denoising_strength = processed.denoising_strength
+            config.extra_generation_params = processed.extra_generation_params
+            config.index_of_first_image = processed.index_of_first_image
+            config.styles = processed.styles
+            config.job_timestamp = processed.job_timestamp
+            config.clip_skip = processed.clip_skip
+            config.eta = processed.eta
+            config.ddim_discretize = processed.ddim_discretize
+            config.s_churn = processed.s_churn
+            config.s_tmin = processed.s_tmin
+            config.s_tmax = processed.s_tmax
+            config.s_noise = processed.s_noise
+            config.s_min_uncond = processed.s_min_uncond
+            config.sampler_noise_scheduler_override = (
+                processed.sampler_noise_scheduler_override
+            )
+            config.is_using_inpainting_conditioning = (
+                processed.is_using_inpainting_conditioning
+            )
+            config.token_merging_ratio = processed.token_merging_ratio
+            config.token_merging_ratio_hr = processed.token_merging_ratio_hr
+            config.infotexts = processed.infotexts
+
+            wandb_table = wandb.Table(
+                columns=[
+                    "Prompt",
+                    "Negative-Prompt",
+                    "Generated-Image",
+                    "Image-Size",
+                    "Sampler-Name",
+                    "Seed",
+                ]
+            )
+
+            for image in processed.images:
+                wandb_image = wandb.Image(image)
+                wandb_table.add_data(
+                    config.prompt,
+                    config.negative_prompt,
+                    wandb_image,
+                    {"Height": config.height, "Width": config.width},
+                    config.sampler_name,
+                    config.seed,
+                )
+                wandb.log({"Generated-Images": wandb_image})
+
+            wandb.finish()
+
         return processed
