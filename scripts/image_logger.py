@@ -21,9 +21,9 @@ class ImageLogger(scripts.Script):
         gr.Markdown("## Logging to Weights & Biases!")
         return super().ui(is_img2img)
 
-    def run(self, p, *args, **kwargs):
+    def postprocess(self, p, processed, *args):
         log.info("Initializeing WandB!!!!!")
-        
-        proc = process_images(p)
-
-        return proc
+        log.warning("Initializeing WandB!!!!!")
+        log.error("Initializeing WandB!!!!!")
+        print("Initializeing WandB!!!!!")
+        return processed
