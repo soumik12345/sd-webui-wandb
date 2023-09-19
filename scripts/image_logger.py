@@ -10,6 +10,18 @@ from modules.shared import opts, cmd_opts, state, log
 import wandb
 
 
+def login_to_wandb():
+    try:
+        api_key = str(opts.wandb_api_key)
+        if api_key != "":
+            os.environ["WANDB_API_KEY"] = api_key
+            log.info("Successfully set WandB API Key")
+        else:
+            log.error("Unable to log in to WandB")
+    except AttributeError:
+        log.error("Unable to log in to WandB")
+
+
 class ImageLogger(scripts.Script):
     def title(self):
         return "Log to Weights & Biases"
@@ -28,8 +40,9 @@ class ImageLogger(scripts.Script):
         return super().ui(is_img2img)
 
     def postprocess(self, p, processed, *args):
-        log.info("Initializeing WandB!!!!!")
-        log.warning("Initializeing WandB!!!!!")
-        log.error("Initializeing WandB!!!!!")
-        print("Initializeing WandB!!!!!")
+        login_to_wandb()
+        # log.info("Initializeing WandB!!!!!")
+        # log.warning("Initializeing WandB!!!!!")
+        # log.error("Initializeing WandB!!!!!")
+        # print("Initializeing WandB!!!!!")
         return processed
