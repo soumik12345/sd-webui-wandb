@@ -16,13 +16,15 @@ class ImageLogger(scripts.Script):
 
     def show(self, is_img2img):
         return scripts.AlwaysVisible
-    
+
     def ui(self, is_img2img):
         with gr.Accordion("Logging to Weights & Biases", open=False):
-            with gr.Row():
-                gr.Markdown(f"**WandB Project: {opts.wandb_project}")
-            with gr.Row():
-                gr.Markdown(f"**WandB Entity: {opts.wandb_entity}")
+            wandb_workspace_url = (
+                f"https://wandb.ai/{opts.wandb_entity}/{opts.wandb_project}"
+            )
+            gr.Markdown(
+                f"Logging to project [**{opts.wandb_project}/{opts.wandb_entity}**]({wandb_workspace_url})"
+            )
         return super().ui(is_img2img)
 
     def postprocess(self, p, processed, *args):
