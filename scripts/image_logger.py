@@ -120,7 +120,7 @@ class ImageLogger(scripts.Script):
                         config.sampler_name,
                         config.seed,
                     ]
-                wandb_table.add_data()
+                wandb_table.add_data(*row)
                 wandb.log({"Generated-Images": wandb_image})
         
         if self.job_type == "txt2img":
