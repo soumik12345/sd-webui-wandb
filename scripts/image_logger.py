@@ -97,6 +97,36 @@ class ImageLogger(scripts.Script):
         config.token_merging_ratio = processed.token_merging_ratio
         config.token_merging_ratio_hr = processed.token_merging_ratio_hr
         config.infotexts = processed.infotexts
+        config.outpath_samples = p.outpath_samples
+        config.outpath_grids = p.outpath_grids
+        config.prompt_for_display = p.prompt_for_display
+        config.styles = p.styles
+        config.latent_sampler = p.latent_sampler
+        config.n_iter = p.n_iter
+        config.hr_second_pass_steps = p.hr_second_pass_steps
+        config.diffusers_guidance_rescale = p.diffusers_guidance_rescale
+        config.full_quality = p.full_quality
+        config.tiling = p.tiling
+        config.do_not_save_samples = p.do_not_save_samples
+        config.do_not_save_grid = p.do_not_save_grid
+        config.overlay_images = p.overlay_images
+        config.do_not_reload_embeddings = p.do_not_reload_embeddings
+        config.denoising_strength = p.denoising_strength
+        config.paste_to = p.paste_to
+        config.color_corrections = p.color_corrections
+        config.sampler_noise_scheduler_override = p.sampler_noise_scheduler_override
+        config.override_settings = p.override_settings
+        config.override_settings_restore_afterwards = p.override_settings_restore_afterwards
+        config.disable_extra_networks = p.disable_extra_networks
+        config.scripts = p.scripts
+        config.script_args = p.script_args
+        config.per_script_args = p.per_script_args
+        config.is_hr_pass = p.is_hr_pass
+        config.hr_force = p.hr_force
+        config.enable_hr = p.enable_hr
+        config.refiner_steps = p.refiner_steps
+        config.refiner_start = p.refiner_start
+        config.ops = p.ops
 
         return config
 
