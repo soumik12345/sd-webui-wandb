@@ -1,12 +1,12 @@
-import modules.scripts as scripts
-import gradio as gr
 import os
 
+import wandb
+import gradio as gr
+
+import modules.scripts as scripts
 from modules.processing import process_images, Processed
 from modules.processing import Processed, StableDiffusionProcessing
-from modules.shared import opts, cmd_opts, state, log
-
-import wandb
+from modules.shared import opts, log
 
 
 def login_to_wandb():
@@ -38,20 +38,20 @@ class ImageLogger(scripts.Script):
                 f"Logging to project [**{opts.wandb_project}/{opts.wandb_entity}**]({wandb_workspace_url})"
             )
         return super().ui(is_img2img)
-    
+
     def _get_wandb_table_columns(self):
         if self.job_type == "txt2img":
             return [
-                    "Prompt",
-                    "Negative-Prompt",
-                    "Generated-Image",
-                    "Image-Size",
-                    "Sampler-Name",
-                    "Seed",
-                ]
+                "Prompt",
+                "Negative-Prompt",
+                "Generated-Image",
+                "Image-Size",
+                "Sampler-Name",
+                "Seed",
+            ]
         else:
             return []
-    
+
     def _set_config(self, p: StableDiffusionProcessing, processed: Processed):
         config = wandb.config
         config.prompt = processed.prompt
@@ -97,7 +97,7 @@ class ImageLogger(scripts.Script):
         config.token_merging_ratio = processed.token_merging_ratio
         config.token_merging_ratio_hr = processed.token_merging_ratio_hr
         config.infotexts = processed.infotexts
-        
+
         return config
 
     def postprocess(self, p: StableDiffusionProcessing, processed: Processed, *args):
@@ -122,7 +122,7 @@ class ImageLogger(scripts.Script):
                     ]
                 wandb_table.add_data(*row)
                 wandb.log({"Generated-Images": wandb_image})
-        
+
             if self.job_type == "txt2img":
                 wandb.log({"Text-to-Image": wandb_table})
 
