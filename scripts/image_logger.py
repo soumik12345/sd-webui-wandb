@@ -37,7 +37,7 @@ class ImageLogger(scripts.Script):
             gr.Markdown(
                 f"Logging to project [**{opts.wandb_project}/{opts.wandb_entity}**]({wandb_workspace_url})"
             )
-        return [super().ui(is_img2img)]
+        return super().ui(is_img2img)
 
     def postprocess(self, p, processed, *args):
         login_to_wandb()
