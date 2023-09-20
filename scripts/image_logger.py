@@ -41,8 +41,12 @@ class ImageLogger(scripts.Script):
 
     def postprocess(self, p, processed, *args):
         login_to_wandb()
-        log.info("Initializeing WandB!!!!!")
-        log.warning("Initializeing WandB!!!!!")
-        log.error("Initializeing WandB!!!!!")
-        print("Initializeing WandB!!!!!")
+        with wandb.init(
+            project=opts.wandb_project, entity=opts.wandb_entity, job_type=self.job_type
+        ):
+            log.info("Initializeing WandB!!!!!")
+            log.warning("Initializeing WandB!!!!!")
+            log.error("Initializeing WandB!!!!!")
+            print(processed)
+            print(p)
         return processed
