@@ -123,7 +123,7 @@ class ImageLogger(scripts.Script):
                 wandb_table.add_data(*row)
                 wandb.log({"Generated-Images": wandb_image})
         
-        if self.job_type == "txt2img":
-            wandb.log({"Text-to-Image": wandb_table})
+            if self.job_type == "txt2img":
+                wandb.log({"Text-to-Image": wandb_table})
 
         return processed
