@@ -13,7 +13,7 @@ def login_to_wandb():
     try:
         api_key = str(opts.wandb_api_key)
         if api_key != "":
-            os.environ["WANDB_API_KEY"] = api_key
+            wandb.login(key=opts.wandb_api_key, relogin=True)
             log.info("Successfully set WandB API Key")
         else:
             log.error("Unable to log in to WandB")
