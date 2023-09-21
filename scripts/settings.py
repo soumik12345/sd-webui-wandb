@@ -5,21 +5,8 @@ from modules import shared
 from modules import script_callbacks
 
 
-def login_to_wandb():
-    try:
-        api_key = str(shared.opts.wandb_api_key)
-        if api_key != "":
-            shared.log.info("Re-logging in to WandB: " + api_key)
-            os.environ["WANDB_API_KEY"] = api_key
-            shared.log.info("Successfully set WandB API Key")
-        else:
-            shared.log.error("Unable to re-log in to WandB")
-    except AttributeError:
-        shared.log.error("Unable to re-log in to WandB")
-
-
 def wandb_settings():
-    section = ('wandb', "Weights & Biases")
+    section = ("wandb", "Weights & Biases")
     shared.opts.add_option(
         "wandb_api_key",
         shared.OptionInfo(
@@ -28,10 +15,7 @@ def wandb_settings():
             component=gr.Textbox,
             component_args={"type": "password", "interactive": True},
             section=section,
-            onchange=login_to_wandb(),
-            submit=login_to_wandb(),
-            comment_before="You can get your WandB API key from [https://wandb.ai/authorize](https://wandb.ai/authorize)"
-        )
+        ),
     )
     shared.opts.add_option(
         "wandb_project",
@@ -41,7 +25,7 @@ def wandb_settings():
             component=gr.Textbox,
             component_args={"interactive": True},
             section=section,
-        )
+        ),
     )
     shared.opts.add_option(
         "wandb_entity",
@@ -51,7 +35,7 @@ def wandb_settings():
             component=gr.Textbox,
             component_args={"interactive": True},
             section=section,
-        )
+        ),
     )
 
 
