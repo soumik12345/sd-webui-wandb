@@ -3,10 +3,12 @@ import os
 import wandb
 import gradio as gr
 
+import modules
 import modules.scripts as scripts
+from modules import sd_vae, shared
+from modules.shared import opts, log, sd_model
 from modules.processing import process_images, Processed
 from modules.processing import Processed, StableDiffusionProcessing
-from modules.shared import opts, log
 
 
 def login_to_wandb():
@@ -55,7 +57,11 @@ class ImageLogger(scripts.Script):
     def _set_config(self, p: StableDiffusionProcessing, processed: Processed):
         config = wandb.config
         config.prompt = processed.prompt
+        config.prompt_2 = p.refiner_prompt if len(p.refiner_prompt) > 0 else None
         config.negative_prompt = processed.negative_prompt
+        config.negative_prompt_2 = (
+            p.refiner_negative if len(p.refiner_negative) > 0 else None
+        )
         config.all_prompts = processed.all_prompts
         config.all_negative_prompts = processed.all_negative_prompts
         config.seed = processed.seed
@@ -106,7 +112,7 @@ class ImageLogger(scripts.Script):
         config.hr_second_pass_steps = p.hr_second_pass_steps
         config.diffusers_guidance_rescale = p.diffusers_guidance_rescale
         config.full_quality = p.full_quality
-        config.tiling = p.tiling
+        config.tiling = p.tiling if p.tiling else None
         config.do_not_save_samples = p.do_not_save_samples
         config.do_not_save_grid = p.do_not_save_grid
         config.overlay_images = p.overlay_images
@@ -116,7 +122,9 @@ class ImageLogger(scripts.Script):
         config.color_corrections = p.color_corrections
         config.sampler_noise_scheduler_override = p.sampler_noise_scheduler_override
         config.override_settings = p.override_settings
-        config.override_settings_restore_afterwards = p.override_settings_restore_afterwards
+        config.override_settings_restore_afterwards = (
+            p.override_settings_restore_afterwards
+        )
         config.disable_extra_networks = p.disable_extra_networks
         config.scripts = p.scripts
         config.script_args = p.script_args
@@ -127,6 +135,48 @@ class ImageLogger(scripts.Script):
         config.refiner_steps = p.refiner_steps
         config.refiner_start = p.refiner_start
         config.ops = p.ops
+        config.model = (
+            None
+            if (not opts.add_model_name_to_info)
+            or (not sd_model.sd_checkpoint_info.model_name)
+            else sd_model.sd_checkpoint_info.model_name.replace(",", "").replace(
+                ":", ""
+            ),
+        )
+        config.model_hash = (
+            getattr(
+                p,
+                "sd_model_hash",
+                None
+                if (not opts.add_model_hash_to_info) or (not sd_model.sd_model_hash)
+                else sd_model.sd_model_hash,
+            ),
+        )
+        config.vae = (
+            (
+                None
+                if not opts.add_model_name_to_info or sd_vae.loaded_vae_file is None
+                else os.path.splitext(os.path.basename(sd_vae.loaded_vae_file))[0]
+            )
+            if p.full_quality
+            else "TAESD"
+        )
+        config.variation_seed = (
+            None if p.subseed_strength == 0 else processed.all_subseeds[index]
+        )
+        config.variation_strength = (
+            None if p.subseed_strength == 0 else p.subseed_strength
+        )
+        config.backend = (
+            "Diffusers" if shared.backend == shared.Backend.DIFFUSERS else "Original"
+        )
+        config.ensd = (
+            opts.eta_noise_seed_delta
+            if opts.eta_noise_seed_delta != 0
+            and modules.sd_samplers_common.is_sampler_using_eta_noise_seed_delta(p)
+            else None,
+        )
+        config.operations = list(set(p.ops))[::-1]
 
         return config
 
